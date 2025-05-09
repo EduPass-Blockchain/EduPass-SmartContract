@@ -1,0 +1,72 @@
+{
+	"compiler": {
+		"version": "0.8.26+commit.8a97fa7a"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "ERROR_USER_IS_CREATED",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "ERROR_USER_IS_NOT_FOUND",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"Constants/Errors.const.sol": "ErrorCodes"
+		},
+		"evmVersion": "cancun",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"Constants/Errors.const.sol": {
+			"keccak256": "0x2be24f8d89860f38aeec383a61e386e39b9ff6372a343ac0510653d9c479f304",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://8295e96734075ffc27c9813c650ed934178a48641cb8842a8b9c93f54e9db23d",
+				"dweb:/ipfs/QmT2XehxfTGBtRhaHKXmPqzPgMaoLDVwrzKGnavrxHCeXP"
+			]
+		}
+	},
+	"version": 1
+}
