@@ -79,3 +79,4 @@ apps/remix-ide-e2e/src/extensions/chrome/metamask
 
 **/artifacts/
 .states/
+.deps/
