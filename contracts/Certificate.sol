@@ -5,6 +5,7 @@ import {ERC721URIStorage, ERC721} from "@openzeppelin/contracts/token/ERC721/ext
 
 import "contracts/RoleManager.sol";
 import "contracts/UserManager.sol";
+import "constants/Errors.const.sol";
 
 contract CertificateContract is ERC721URIStorage {
     RoleManagerContract roleManager;
@@ -31,8 +32,21 @@ contract CertificateContract is ERC721URIStorage {
         _;
     }
 
+    modifier isOwner(address userAddr, string memory userTokenUri) {
+        bool isAvailable = false;
+        UserToken[] memory listToken = listOfUsersToken[userAddr];
+        for (uint256 i = 0; i < listToken.length; i++) {
+            if (keccak256(abi.encodePacked(tokenURI(listToken[i].tokenId))) == keccak256(abi.encodePacked(userTokenUri))) {
+                isAvailable = true;
+                break;
+            }
+        }
+        require(isAvailable == true, ErrorCodes.ERROR_UNAUTHORIZED);
+        _;
+    }
+
     function createCertificate(address userAddr, string memory tokenURI) 
-    public onlyRole(RoleManagerContract.RoleType.ADMIN)
+    public onlyRole(RoleManagerContract.RoleType.ORGANIZATION)
     returns (uint256) {
         uint256 tokenId = _nextTokenId++;
         _mint(userAddr, tokenId);
@@ -55,4 +69,32 @@ contract CertificateContract is ERC721URIStorage {
         }
         return tokenUriArray;
     }
-}
+
+    function setCertificatePublic(string memory userTokenUri)
+    public isOwner(msg.sender, userTokenUri) {
+        UserToken[] storage listToken = listOfUsersToken[msg.sender];
+        for (uint256 i = 0; i < listToken.length; i++) {
+            if (
+                keccak256(abi.encodePacked(tokenURI(listToken[i].tokenId))) ==
+                keccak256(abi.encodePacked(userTokenUri))
+            ) {
+                listToken[i].isPublic = true;
+                break;
+            }
+        }
+    }
+
+    function setCertificatePrivate(string memory userTokenUri)
+    public isOwner(msg.sender, userTokenUri) {
+        UserToken[] storage listToken = listOfUsersToken[msg.sender];
+        for (uint256 i = 0; i < listToken.length; i++) {
+            if (
+                keccak256(abi.encodePacked(tokenURI(listToken[i].tokenId))) ==
+                keccak256(abi.encodePacked(userTokenUri))
+            ) {
+                listToken[i].isPublic = false;
+                break;
+            }
+        }
+    }
+} 
