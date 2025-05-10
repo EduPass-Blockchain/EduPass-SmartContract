@@ -10,7 +10,13 @@ contract CertificateContract is ERC721URIStorage {
     RoleManagerContract roleManager;
     UserManagerContract userManager;
 
+    struct UserToken {
+        uint256 tokenId;
+        bool isPublic;
+    }
+    
     uint256 private _nextTokenId;
+    mapping(address => UserToken[]) private listOfUsersToken;
 
     constructor(
         address _roleManagerAddress,
@@ -25,15 +31,28 @@ contract CertificateContract is ERC721URIStorage {
         _;
     }
 
-    function awardItem(address userAddr, string memory tokenURI) 
+    function createCertificate(address userAddr, string memory tokenURI) 
     public onlyRole(RoleManagerContract.RoleType.ADMIN)
     returns (uint256) {
         uint256 tokenId = _nextTokenId++;
         _mint(userAddr, tokenId);
         _setTokenURI(tokenId, tokenURI);
 
-        userManager.addNftToUser(userAddr, tokenId);
+        UserToken memory newToken = UserToken(tokenId,false);
+        listOfUsersToken[userAddr].push(newToken);        
 
         return tokenId;
+    }
+
+    function listAllCertificatesOfUser(address userAddr)
+    public view returns(string[] memory) {
+        UserToken[] memory listToken = listOfUsersToken[userAddr];
+        string[] memory tokenUriArray = new string[](listToken.length);
+        uint256 idx = 0;
+        for (uint256 i = 0; i < listToken.length; i++) {
+            if ((userAddr == msg.sender && !listToken[i].isPublic) || roleManager.isCurrentUserAdmin() || listToken[i].isPublic)
+                tokenUriArray[idx++] = tokenURI(listToken[i].tokenId);
+        }
+        return tokenUriArray;
     }
 }
