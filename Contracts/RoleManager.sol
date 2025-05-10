@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "Constants/Errors.const.sol";
 
-contract RoleManager {
+contract RoleManagerContract {
     enum RoleType {ADMIN, ORGANIZATION, STUDENT}
 
     mapping(address => RoleType) private userRoles;
@@ -12,26 +12,8 @@ contract RoleManager {
         userRoles[msg.sender] = RoleType.ADMIN;
     }
 
-    function isAdmin(address userAddr) public view returns(bool) {
-        if (userRoles[userAddr] == RoleType.ADMIN)
-            return true;
-        return false;
-    }
-
-    function isOrganization(address userAddr) public view returns(bool) {
-        if (userRoles[userAddr] == RoleType.ORGANIZATION)
-            return true;
-        return false;
-    }
-
-    function isStudent(address userAddr) public view returns(bool) {
-        if (userRoles[userAddr] == RoleType.STUDENT)
-            return true;
-        return false;
-    }
-
     modifier onlyRole(RoleType role) {
-        require(userRoles[msg.sender] == role, ErrorCodes.ERROR_UNAUTHORIZED);
+        require(getRole() == role, ErrorCodes.ERROR_UNAUTHORIZED);
         _;
     }
 

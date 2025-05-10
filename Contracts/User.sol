@@ -5,7 +5,7 @@ import "Constants/Errors.const.sol";
 import "Contracts/RoleManager.sol";
 
 contract UserContract {
-    RoleManager roleManager;
+    RoleManagerContract roleManager;
     enum Gender { Male, Female, Other }
 
     struct User {
@@ -17,7 +17,7 @@ contract UserContract {
     mapping(address => User) private users;
 
     constructor(address _roleManagerAddress) {
-        roleManager = RoleManager(_roleManagerAddress);
+        roleManager = RoleManagerContract(_roleManagerAddress);
         
         users[msg.sender] = User("Admin", 10000000, Gender.Other);
     }
@@ -29,6 +29,11 @@ contract UserContract {
 
     modifier userIsFound(address userAddr) {
         require(users[userAddr].dateOfBirth > 0, ErrorCodes.ERROR_USER_IS_NOT_FOUND);
+        _;
+    }
+
+    modifier onlyRole(RoleManagerContract.RoleType role) {
+        require(roleManager.getRole() == role, ErrorCodes.ERROR_UNAUTHORIZED);
         _;
     }
 
