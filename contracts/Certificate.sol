@@ -28,7 +28,7 @@ contract CertificateContract is ERC721URIStorage {
     }
 
     modifier onlyRole(RoleManagerContract.RoleType role) {
-        require(roleManager.getRole() == role, ErrorCodes.ERROR_UNAUTHORIZED);
+        require(roleManager.getRole(msg.sender) == role, ErrorCodes.ERROR_UNAUTHORIZED);
         _;
     }
 
@@ -64,7 +64,7 @@ contract CertificateContract is ERC721URIStorage {
         string[][] memory tokenUriArray = new string[][](listToken.length);
         uint256 idx = 0;
         for (uint256 i = 0; i < listToken.length; i++) {
-            if ((userAddr == msg.sender && !listToken[i].isPublic) || roleManager.isCurrentUserAdmin() || listToken[i].isPublic) {
+            if ((userAddr == msg.sender && !listToken[i].isPublic) || roleManager.getRole(msg.sender) == RoleManagerContract.RoleType.ADMIN || listToken[i].isPublic) {
                 string[] memory entry = new string[](2);
                 entry[0] = tokenURI(listToken[i].tokenId);
                 entry[1] = listToken[i].isPublic ? "1" : "0";

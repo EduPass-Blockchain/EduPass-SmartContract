@@ -12,32 +12,24 @@ contract RoleManagerContract {
         userRoles[msg.sender] = RoleType.ADMIN;
     }
 
-    modifier onlyRole(RoleType role) {
-        require(getRole() == role, ErrorCodes.ERROR_UNAUTHORIZED);
+    modifier onlyRole(RoleType role, address userAddr) {
+        require(getRole(userAddr) == role, ErrorCodes.ERROR_UNAUTHORIZED);
         _;
     }
 
-    function isCurrentUserAdmin() 
-    public view 
-    returns(bool) {
-        if (getRole() == RoleType.ADMIN)
-            return true;
-        return false;
-    }
-
-    function setAdminRole(address userAddr) public onlyRole(RoleType.ADMIN) {
+    function setAdminRole(address userAddr) public onlyRole(RoleType.ADMIN, msg.sender) {
         userRoles[userAddr] = RoleType.ADMIN;
     }
 
-    function setOrganizationRole(address userAddr) public onlyRole(RoleType.ADMIN) {
+    function setOrganizationRole(address userAddr) public onlyRole(RoleType.ADMIN, msg.sender) {
         userRoles[userAddr] = RoleType.ORGANIZATION;
     }
 
-    function setStudentRole(address userAddr) public onlyRole(RoleType.ADMIN) {
+    function setStudentRole(address userAddr) public onlyRole(RoleType.ADMIN, msg.sender) {
         userRoles[userAddr] = RoleType.STUDENT;
     }
 
-    function getRole() public view returns(RoleType) {
-        return userRoles[msg.sender];
+    function getRole(address userAddr) public view returns(RoleType) {
+        return userRoles[userAddr];
     }
 }

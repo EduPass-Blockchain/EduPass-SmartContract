@@ -33,7 +33,7 @@ contract UserManagerContract {
     }
 
     modifier onlyRole(RoleManagerContract.RoleType role) {
-        require(roleManager.getRole() == role, ErrorCodes.ERROR_UNAUTHORIZED);
+        require(roleManager.getRole(msg.sender) == role, ErrorCodes.ERROR_UNAUTHORIZED);
         _;
     }
 
