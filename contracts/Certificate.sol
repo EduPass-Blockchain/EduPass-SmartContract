@@ -59,15 +59,24 @@ contract CertificateContract is ERC721URIStorage {
     }
 
     function listAllCertificatesOfUser(address userAddr)
-    public view returns(string[] memory) {
+    public view returns(string[][] memory) {
         UserToken[] memory listToken = listOfUsersToken[userAddr];
-        string[] memory tokenUriArray = new string[](listToken.length);
+        string[][] memory tokenUriArray = new string[][](listToken.length);
         uint256 idx = 0;
         for (uint256 i = 0; i < listToken.length; i++) {
-            if ((userAddr == msg.sender && !listToken[i].isPublic) || roleManager.isCurrentUserAdmin() || listToken[i].isPublic)
-                tokenUriArray[idx++] = tokenURI(listToken[i].tokenId);
+            if ((userAddr == msg.sender && !listToken[i].isPublic) || roleManager.isCurrentUserAdmin() || listToken[i].isPublic) {
+                string[] memory entry = new string[](2);
+                entry[0] = tokenURI(listToken[i].tokenId);
+                entry[1] = listToken[i].isPublic ? "1" : "0";
+                tokenUriArray[idx++] = entry;
+            }
         }
-        return tokenUriArray;
+        
+        string[][] memory trimmed = new string[][](idx);
+        for (uint256 i = 0; i < idx; i++) {
+            trimmed[i] = tokenUriArray[i];
+        }
+        return trimmed;
     }
 
     function setCertificatePublic(string memory userTokenUri)
